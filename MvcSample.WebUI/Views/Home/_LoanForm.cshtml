@@ -1,0 +1,22 @@
+
+@using Domain.Enums;
+
+@model PricerViewModel
+
+@using (Html.BeginForm("Index", "Home", FormMethod.Post, new { id = "frmLoan" }))
+{
+    @Html.HiddenFor(m => m.LlpaCount)
+
+    <div>
+        @Html.LabelFor(m => m.Occupancy)
+        @Html.DropDownListFor(m => m.Occupancy, (from Occupancy e in Enum.GetValues(typeof(Occupancy)).OfType<Occupancy>().ToList()
+                                                                         select new SelectListItem { Value = e.ToString(), Text = e.ToString() }), "", new { })
+        @Html.LabelFor(m => m.PropertyType)
+        @Html.DropDownListFor(m => m.PropertyType, (from PropertyType e in Enum.GetValues(typeof(PropertyType)).OfType<PropertyType>().ToList()
+                                                                         select new SelectListItem { Value = e.ToString(), Text = e.ToString() }), "", new { })
+        @Html.LabelFor(m => m.Purpose)
+        @Html.DropDownListFor(m => m.Purpose, (from Purpose e in Enum.GetValues(typeof(Purpose)).OfType<Purpose>().ToList()
+                                                                         select new SelectListItem { Value = e.ToString(), Text = e.ToString() }), "", new { })
+    </div>
+    <button type="submit">Submit</button>
+}

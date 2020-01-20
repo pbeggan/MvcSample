@@ -1,0 +1,90 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Loan-Level Price Adjustments (LLPA)</h1>
+    @await Html.PartialAsync("_LlpaForm")
+    <table class="table">
+        <tr>
+            <th>Occupancy</th>
+            <th>Property Type</th>
+            <th>Purpose</th>
+            <th>Price Adjustment</th>
+            <th>Price Ceiling</th>
+            <th>Price Floor</th>
+        </tr>
+        <tbody id="llpas"></tbody>
+    </table>
+</div>
+
+@section Scripts {
+
+<script>
+
+    $(function () {
+
+        $("#btnSubmit").on("click", function () {
+
+            var payload = $("#frmLlpa").serializeObject();
+
+            $.ajax({
+                type: "POST",
+                url: "/Llpa",
+                data: JSON.stringify(payload),
+                contentType: "application/json; charset=utf-8",
+            }).done(function (data) {
+                refreshList();
+            }).fail(function (jqXHR, textStatus) {
+                console.log(jqXHR);
+            });
+
+        });
+
+        refreshList();
+    });
+
+    function refreshList() {
+
+        $.get("/Llpa").done(function (response) {
+
+            var str = "";
+
+            $.each(response, function (key, value) {
+                str += "<tr>";
+                str += "<td>" + value.occupancy + "</td>";
+                str += "<td>" + value.propertyType + "</td>";
+                str += "<td>" + value.purpose + "</td>";
+                str += "<td>" + value.priceAdjustment + "</td>";
+                str += "<td>" + value.priceCeiling + "</td>";
+                str += "<td>" + value.priceFloor + "</td>";
+                str += "</tr>";
+            });
+
+            $("#llpas").html(str);
+
+        }).fail(function (jqXHR, textStatus) {
+            console.log(jqXHR);
+        });
+
+    }
+
+    $.fn.serializeObject = function () {
+        var o = {};
+        var a = this.serializeArray();
+        $.each(a, function () {
+            if (o[this.name]) {
+                if (!o[this.name].push) {
+                    o[this.name] = [o[this.name]];
+                }
+                o[this.name].push(this.value || '');
+            } else {
+                o[this.name] = this.value || '';
+            }
+        });
+        return o;
+    };
+
+</script>
+
+}

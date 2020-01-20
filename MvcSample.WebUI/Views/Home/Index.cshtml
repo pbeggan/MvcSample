@@ -1,0 +1,42 @@
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@model PricerViewModel
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Run a loan scenario against @Model.LlpaCount @Html.ActionLink("Loan-Level Price Adjustments", "Llpas", "Home") (LLPA)</p>
+    @await Html.PartialAsync("_LoanForm", Model)
+    
+    <table class="table">
+        <tr>
+            <th>Rate</th>
+            <th>15 Days</th>
+            <th>30 Days</th>
+            <th>45 Days</th>
+            <th>60 Days</th>
+            <th>75 Days</th>
+        </tr>
+        <tbody>
+            @foreach (var r in Model.Rates)
+            {
+                <tr>
+                    <td>@r.Key</td>
+
+                    @foreach (var p in r.Value)
+                    {
+                        if (p.IsValid)
+                        {
+                            <td>@p.AdjustedPrice</td>
+                        }
+                        else
+                        {
+                            <td><s>@p.AdjustedPrice</s></td>
+                        }
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
